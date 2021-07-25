@@ -21,11 +21,11 @@ const firebaseApp = !firebase.apps.length
   ? firebase.initializeApp(firebaseConfig)
   : firebase.app()
 
-export const analytics = firebaseApp.analytics
+export const analytics = firebase.analytics
 if (isClientSide()) firebase.analytics()
-export const database = firebaseApp.database
-export const firestore = firebaseApp.firestore
-export const auth = firebaseApp.auth
+export const database = firebase!.database()
+export const firestore = firebase.firestore()
+export const auth = firebase!.auth()
 
 // For easy debugging
 if (isDev() && isClientSide()) window.firebase = firebaseApp
