@@ -1,3 +1,6 @@
 import { setup } from 'twind'
+import { withForms } from '@twind/forms'
 
-setup()
+setup({
+  preflight: withForms()
+})
