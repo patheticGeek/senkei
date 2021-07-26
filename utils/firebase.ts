@@ -28,6 +28,27 @@ export const database = firebase.database()
 export const firestore = firebase.firestore()
 export const auth = firebase.auth()
 
+// Helper functions
+export const docWithId = (doc: firebase.firestore.DocumentData) => ({
+  id: doc.id,
+  ...doc.data()
+})
+
+export const getDocumentItem = async <T extends { id: string }>(
+  docRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+) => {
+  const doc = await docRef.get()
+  return docWithId(doc) as T
+}
+
+export const getCollectionItems = async <T extends {}>(
+  collectionRef: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
+) => {
+  const snapshot = await collectionRef.get()
+  const docs = snapshot.docs.map((snapshot) => docWithId(snapshot))
+  return docs as T[]
+}
+
 // For easy debugging
 if (isDev() && isClientSide()) {
   // @ts-ignore
