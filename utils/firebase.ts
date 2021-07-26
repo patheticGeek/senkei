@@ -1,10 +1,11 @@
-import firebase from '@firebase/app'
+import firebase from 'firebase/app'
+
 import { isClientSide, isDev } from '@utils/common'
 
-import '@firebase/auth'
-import '@firebase/database'
-import '@firebase/analytics'
-import '@firebase/firestore'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/analytics'
+import 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_apiKey,
@@ -21,13 +22,16 @@ const firebaseApp = !firebase.apps.length
   ? firebase.initializeApp(firebaseConfig)
   : firebase.app()
 
-export const analytics = firebaseApp.analytics
+export const analytics = firebase.analytics
 if (isClientSide()) firebase.analytics()
-export const database = firebaseApp.database
-export const firestore = firebaseApp.firestore
-export const auth = firebaseApp.auth
+export const database = firebase.database()
+export const firestore = firebase.firestore()
+export const auth = firebase.auth()
 
 // For easy debugging
-if (isDev() && isClientSide()) window.firebase = firebaseApp
+if (isDev() && isClientSide()) {
+  // @ts-ignore
+  window.firebase = firebase
+}
 
 export default firebaseApp
