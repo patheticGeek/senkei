@@ -1,10 +1,11 @@
-import firebase from '@firebase/app'
+import firebase from 'firebase/app'
+
 import { isClientSide, isDev } from '@utils/common'
 
-import '@firebase/auth'
-import '@firebase/database'
-import '@firebase/analytics'
-import '@firebase/firestore'
+import 'firebase/auth'
+import 'firebase/database'
+import 'firebase/analytics'
+import 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_apiKey,
@@ -23,11 +24,35 @@ const firebaseApp = !firebase.apps.length
 
 export const analytics = firebase.analytics
 if (isClientSide()) firebase.analytics()
-export const database = firebase!.database()
+export const database = firebase.database()
 export const firestore = firebase.firestore()
-export const auth = firebase!.auth()
+export const auth = firebase.auth()
+
+// Helper functions
+export const docWithId = (doc: firebase.firestore.DocumentData) => ({
+  id: doc.id,
+  ...doc.data()
+})
+
+export const getDocumentItem = async <T extends { id: string }>(
+  docRef: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+) => {
+  const doc = await docRef.get()
+  return docWithId(doc) as T
+}
+
+export const getCollectionItems = async <T extends {}>(
+  collectionRef: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
+) => {
+  const snapshot = await collectionRef.get()
+  const docs = snapshot.docs.map((snapshot) => docWithId(snapshot))
+  return docs as T[]
+}
 
 // For easy debugging
-if (isDev() && isClientSide()) window.firebase = firebaseApp
+if (isDev() && isClientSide()) {
+  // @ts-ignore
+  window.firebase = firebase
+}
 
 export default firebaseApp
