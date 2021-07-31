@@ -1,11 +1,14 @@
+import { login, useAppDispatch, useUser } from '@redux/index'
 import { auth } from '@utils/firebase'
 import React, { useState } from 'react'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
-  const [user, setUser] = useState<null | {}>(null)
+  const user = useUser()
   const [error, setError] = useState('')
+
+  const dispatch = useAppDispatch()
 
   const signUp = async () => {
     try {
@@ -13,8 +16,9 @@ function Login() {
         email,
         pass
       )
-      const user = userCredential.user
-      setUser(user)
+      if (!userCredential.user) return
+      const { uid, email: _email } = userCredential.user
+      dispatch(login({ uid, email: _email || undefined }))
       console.log('account created', user)
     } catch (error) {
       setError(error.message)
@@ -26,7 +30,9 @@ function Login() {
     try {
       const userCredential = await auth.signInWithEmailAndPassword(email, pass)
       const user = userCredential.user
-      setUser(user)
+      if (!userCredential.user) return
+      const { uid, email: _email } = userCredential.user
+      dispatch(login({ uid, email: _email || undefined }))
       console.log('welcome to your account', user)
     } catch (error) {
       setError(error.message)
@@ -57,8 +63,7 @@ function Login() {
             Sign in to your account
           </h2>
         </div>
-        <form className="mt-8 space-y-6" action="#" method="POST">
-          <input type="hidden" name="remember" defaultValue="true" />
+        <div className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email-address" className="sr-only">
@@ -121,7 +126,7 @@ function Login() {
               Sign Up
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
