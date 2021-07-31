@@ -1,17 +1,19 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
-import { login, useAppDispatch, useUser } from '@state/index'
+import { login, useAppDispatch } from '@state/index'
 import { auth } from '@utils/firebase'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
-  const user = useUser()
   const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const dispatch = useAppDispatch()
 
   const signUp = async () => {
+    setIsLoading(true)
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(
         email,
@@ -20,35 +22,40 @@ function Login() {
       if (!userCredential.user) return
       const { uid, email: _email } = userCredential.user
       dispatch(login({ uid, email: _email || undefined }))
-      console.log('account created', user)
+      toast.success('Account Created')
     } catch (error) {
       setError(error.message)
-      console.error(error)
+      toast.error(error)
     }
+    setIsLoading(false)
   }
 
   const signIn = async () => {
+    setIsLoading(true)
     try {
       const userCredential = await auth.signInWithEmailAndPassword(email, pass)
-      const user = userCredential.user
       if (!userCredential.user) return
       const { uid, email: _email } = userCredential.user
       dispatch(login({ uid, email: _email || undefined }))
-      console.log('welcome to your account', user)
+      toast.success('You are successfully logged in')
     } catch (error) {
       setError(error.message)
-      console.error(error)
+      toast.error(error)
     }
+    setIsLoading(false)
   }
 
   const forgotPass = async () => {
+    if (isLoading) return
+    setIsLoading(true)
     try {
       await auth.sendPasswordResetEmail(email)
-      console.log('Password reset email sent')
+      toast.success('Password reset email sent')
     } catch (error) {
       setError(error.message)
-      console.log(error)
+      toast.error(error)
     }
+    setIsLoading(false)
   }
 
   return (
@@ -92,7 +99,7 @@ function Login() {
                 onChange={(e) => setPass(e.target.value)}
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none  rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
               />
             </div>
@@ -106,7 +113,7 @@ function Login() {
             <div className="text-sm">
               <p
                 onClick={forgotPass}
-                className="font-medium text-indigo-600 hover:text-indigo-500">
+                className="font-medium cursor-pointer text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
               </p>
             </div>
@@ -116,13 +123,15 @@ function Login() {
             <button
               type="submit"
               onClick={signIn}
-              className="group relative w-full flex justify-center mx-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              disabled={isLoading}
+              className="group relative disabled:opacity-75 w-full flex justify-center mx-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Log In
             </button>
             <button
               type="submit"
               onClick={signUp}
-              className="group relative w-full flex justify-center mx-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              disabled={isLoading}
+              className="group relative disabled:opacity-75 w-full flex justify-center mx-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Sign Up
             </button>
           </div>
