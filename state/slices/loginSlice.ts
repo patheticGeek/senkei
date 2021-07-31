@@ -1,5 +1,6 @@
 import { LoginState, User } from '@interfaces/state'
-import { createSlice, PayloadAction, useAppSelector } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { useAppSelector } from '@state/index'
 
 const initialState: LoginState = {
   isLoggedIn: false,

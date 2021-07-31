@@ -1,6 +1,7 @@
-import { login, useAppDispatch, useUser } from '@redux/index'
-import { auth } from '@utils/firebase'
 import React, { useState } from 'react'
+
+import { login, useAppDispatch, useUser } from '@state/index'
+import { auth } from '@utils/firebase'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -103,12 +104,11 @@ function Login() {
 
           <div className="flex items-center justify-end">
             <div className="text-sm">
-              <a
-                href="#"
+              <p
                 onClick={forgotPass}
                 className="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
-              </a>
+              </p>
             </div>
           </div>
 

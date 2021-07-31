@@ -19,7 +19,7 @@
       "@components*": ["components*"],
       "@interfaces*": ["interfaces*"],
       "@utils*": ["utils*"],
-      "@redux*": ["redux*"]
+      "@state*": ["state*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
