@@ -1,17 +1,22 @@
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import React from 'react'
+import { Toaster } from 'react-hot-toast'
 import { Provider } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
 
 import { store } from '@state/index'
+import useAuth from '@utils/hooks/useAuth'
 
 import '@utils/firebase'
 import '@utils/twindSetup'
 import 'twind/shim'
 
-import 'react-toastify/dist/ReactToastify.min.css'
 import '@styles/globals.css'
+
+const AuthListener = () => {
+  useAuth()
+  return null
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -22,9 +27,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <AuthListener />
+
       <Component {...pageProps} />
 
-      <ToastContainer />
+      <Toaster position="top-right" reverseOrder={false} />
     </Provider>
   )
 }

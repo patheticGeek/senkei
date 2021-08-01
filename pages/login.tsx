@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { toast } from 'react-toastify'
+import { useRouter } from 'next/dist/client/router'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
 
-import { login, useAppDispatch } from '@state/index'
+import { login, useAppDispatch, useLoginState } from '@state/index'
 import { auth } from '@utils/firebase'
 
 function Login() {
@@ -10,7 +11,15 @@ function Login() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const loginState = useLoginState()
   const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (loginState.isLoggedIn) {
+      router.push('/')
+    }
+  }, [router, loginState])
 
   const signUp = async () => {
     setIsLoading(true)
@@ -25,7 +34,7 @@ function Login() {
       toast.success('Account Created')
     } catch (error) {
       setError(error.message)
-      toast.error(error)
+      toast.error(error.message)
     }
     setIsLoading(false)
   }
@@ -40,7 +49,7 @@ function Login() {
       toast.success('You are successfully logged in')
     } catch (error) {
       setError(error.message)
-      toast.error(error)
+      toast.error(error.message)
     }
     setIsLoading(false)
   }
@@ -53,7 +62,7 @@ function Login() {
       toast.success('Password reset email sent')
     } catch (error) {
       setError(error.message)
-      toast.error(error)
+      toast.error(error.message)
     }
     setIsLoading(false)
   }
